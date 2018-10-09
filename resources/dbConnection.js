@@ -4,7 +4,6 @@ const pool = mysql.createPool({
   host:'34.240.241.171', 
   user: 'smartcerv', 
   password: 'smartcerv', 
-  database: 'openmrs',
-  connectionLimit: 10});
+  database: 'openmrs'});
 
 export default pool;
