@@ -4,7 +4,6 @@ import dbConnection from '../resources/dbConnection';
 
 let connection = dbConnection.promise();
 
-
 const CONTROLLERS = [
 
     controllerGenerator('location')(daoGenerator('location','uuid',connection)),
