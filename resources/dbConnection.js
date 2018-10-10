@@ -1,9 +1,11 @@
 import mysql from 'mysql2';
 
 const pool = mysql.createPool({
-  host:'0.0.0.0', 
-  user: 'XXXXXXX', 
-  password: 'XXXXXX', 
-  database: 'XXXXXX'});
+
+  host: process.env.MYSQL_HOST || "localhost", 
+  user: process.env.MYSQL_USERNAME || "openmrs", 
+  password: process.env.MYSQL_USER_PASSWORD || "openmrs", 
+  database: process.env.OPENMRS_MYSQL_DATABASE || "openmrs"
+});
 
 export default pool;
