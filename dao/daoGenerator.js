@@ -1,18 +1,32 @@
 
 let getAllData = connection => tableName => async() => await connection.query(`SELECT * FROM ${tableName}`);
 
-let getDataByUUID = connection => tableName => idAttribute => async(id) => await connection.execute(`SELECT * FROM ${tableName} WHERE ${idAttribute} = ? `, [id]);
+let getDataByUUID = connection => tableName => uuidAttribute => async(uuid) => await connection.execute(`SELECT * FROM ${tableName} WHERE ${uuidAttribute} = ? `, [uuid]);
 
-let getDataByDatetimeNewerThan = connection => tableName => async(datetime) => await connection.execute(`SELECT * FROM ${tableName} WHERE date_changed > ? OR date_created > ?`, [datetime, datetime]);
+let getDataByDatetimeNewerThan = connection => tableName => datetimeAttribute => async(datetime) => {
 
-let daoGenerator = callbacks => (tableName, idAttribute, connection) => (
+    let datetimeArg = []; 
+    let condition = datetimeAttribute.reduce((statement, attribute, index)=> {
+
+            datetimeArg.push(datetime)
+
+            if(datetimeAttribute.length - index == 1)
+                return `${statement} ${attribute} > ?` 
+            else
+                return `${statement} ${attribute} > ? OR`
+        },"");
+
+    return await connection.execute(`SELECT * FROM ${tableName} WHERE ${condition}`, datetimeArg);
+}
+
+let daoGenerator = callbacks => (tableName, uuidAttribute, datetimeAttribute, connection) => (
     
     {
         getAllData: callbacks[0](connection)(tableName),
 
-        getDataByUUID: callbacks[1](connection)(tableName)(idAttribute),
+        getDataByUUID: callbacks[1](connection)(tableName)(uuidAttribute),
 
-        getDataByDatetimeNewerThan: callbacks[2](connection)(tableName)
+        getDataByDatetimeNewerThan: callbacks[2](connection)(tableName)(datetimeAttribute)
 
     }
 )
