@@ -6,7 +6,7 @@ let connection = dbConnection.promise();
 
 const CONTROLLERS = [
 
-    controllerGenerator('location')(daoGenerator('location','uuid',['date_created','date_changed'],['date_created','date_changed'],connection)),
+    controllerGenerator('location')(daoGenerator('location','uuid',['date_created','date_changed'],connection)),
     controllerGenerator('person/name')(daoGenerator('person_name','uuid',['date_created','date_changed'],connection)),
     controllerGenerator('person')(daoGenerator('person','uuid',['date_created','date_changed'],connection)),
     controllerGenerator('patient')(daoGenerator('patient','uuid',['date_created','date_changed'],connection)),
