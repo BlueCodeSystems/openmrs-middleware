@@ -7,6 +7,8 @@ let connection = dbConnection.promise();
 const CONTROLLERS = [
 
     controllerGenerator('location')(daoGenerator('location','uuid',['date_created','date_changed'],connection)),
+    controllerGenerator('location/tag')(daoGenerator('location_tag','uuid',['date_created','date_changed'],connection)),
+    controllerGenerator('location/tag/map')(daoGenerator('location_tag_map',null,null,connection)),
     controllerGenerator('person/name')(daoGenerator('person_name','uuid',['date_created','date_changed'],connection)),
     controllerGenerator('person')(daoGenerator('person','uuid',['date_created','date_changed'],connection)),
     controllerGenerator('patient')(daoGenerator('patient','uuid',['date_created','date_changed'],connection)),
@@ -44,7 +46,9 @@ const CONTROLLERS = [
     controllerGenerator('encounter/type')(daoGenerator('encounter_type','uuid',['date_created','date_changed'],connection)),
     controllerGenerator('field')(daoGenerator('field','uuid',['date_created','date_changed'],connection)),
     controllerGenerator('field/answer')(daoGenerator('field_answer','uuid',['date_created','date_changed'],connection)),
-    controllerGenerator('field/type')(daoGenerator('field_type','uuid',['date_created','date_changed'],connection))
+    controllerGenerator('field/type')(daoGenerator('field_type','uuid',['date_created','date_changed'],connection)),
+    controllerGenerator('user')(daoGenerator('users','uuid',['date_created','date_changed'],connection)),
+    controllerGenerator('provider')(daoGenerator('provider','uuid',['date_created','date_changed'],connection))
       
 ];
 
