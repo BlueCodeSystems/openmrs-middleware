@@ -10,8 +10,11 @@ const CONTROLLERS = [
     controllerGenerator('location/tag')(daoGenerator('location_tag','uuid',['date_created','date_changed'],connection)),
     controllerGenerator('location/tag/map')(daoGenerator('location_tag_map',null,null,connection)),
     controllerGenerator('person/name')(daoGenerator('person_name','uuid',['date_created','date_changed'],connection)),
+    controllerGenerator('person/address')(daoGenerator('person_address','uuid',['date_created','date_changed'],connection)),
     controllerGenerator('person')(daoGenerator('person','uuid',['date_created','date_changed'],connection)),
     controllerGenerator('patient')(daoGenerator('patient','uuid',['date_created','date_changed'],connection)),
+    controllerGenerator('patient/identifier')(daoGenerator('patient_identifier','uuid',['date_created','date_changed'],connection)),
+    controllerGenerator('patient/identifier/type')(daoGenerator('patient_identifier_type','uuid',['date_created','date_changed'],connection)),
     controllerGenerator('obs')(daoGenerator('obs','uuid',['date_created'],connection)),
     controllerGenerator('concept')(daoGenerator('concept','uuid',['date_created','date_changed'],connection)),
     controllerGenerator('concept/answer')(daoGenerator('concept_answer','uuid',['date_created','date_changed'],connection)),
@@ -48,8 +51,7 @@ const CONTROLLERS = [
     controllerGenerator('field/answer')(daoGenerator('field_answer','uuid',['date_created','date_changed'],connection)),
     controllerGenerator('field/type')(daoGenerator('field_type','uuid',['date_created','date_changed'],connection)),
     controllerGenerator('user')(daoGenerator('users','uuid',['date_created','date_changed'],connection)),
-    controllerGenerator('provider')(daoGenerator('provider','uuid',['date_created','date_changed'],connection))
-      
+    controllerGenerator('provider')(daoGenerator('provider','uuid',['date_created','date_changed'],connection))     
 ];
 
 export {CONTROLLERS}
