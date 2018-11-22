@@ -9,6 +9,8 @@ const CONTROLLERS = [
     controllerGenerator('location')(daoGenerator('location','uuid',['date_created','date_changed'],connection)),
     controllerGenerator('location/tag')(daoGenerator('location_tag','uuid',['date_created','date_changed'],connection)),
     controllerGenerator('location/tag/map')(daoGenerator('location_tag_map',null,null,connection)),
+    controllerGenerator('location/attribute')(daoGenerator('location_attribute','uuid',['date_created','date_changed'],connection)),
+    controllerGenerator('location/attribute/type')(daoGenerator('location_attribute_type','uuid',['date_created','date_changed'],connection)),
     controllerGenerator('person/name')(daoGenerator('person_name','uuid',['date_created','date_changed'],connection)),
     controllerGenerator('person/address')(daoGenerator('person_address','uuid',['date_created','date_changed'],connection)),
     controllerGenerator('person')(daoGenerator('person','uuid',['date_created','date_changed'],connection)),
