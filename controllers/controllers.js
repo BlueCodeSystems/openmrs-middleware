@@ -53,7 +53,8 @@ const CONTROLLERS = [
     controllerGenerator('field/answer')(daoGenerator('field_answer','uuid',['date_created','date_changed'],connection)),
     controllerGenerator('field/type')(daoGenerator('field_type','uuid',['date_created','date_changed'],connection)),
     controllerGenerator('user')(daoGenerator('users','uuid',['date_created','date_changed'],connection)),
-    controllerGenerator('provider')(daoGenerator('provider','uuid',['date_created','date_changed'],connection))     
+    controllerGenerator('provider')(daoGenerator('provider','uuid',['date_created','date_changed'],connection)),
+    controllerGenerator('visit/type')(daoGenerator('visit_type','uuid',['date_created','date_changed'],connection))
 ];
 
 export {CONTROLLERS}
