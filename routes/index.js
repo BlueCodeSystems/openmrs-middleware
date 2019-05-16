@@ -14,6 +14,8 @@ CONTROLLERS.forEach( controller => {
 
     router.get(`/${SUB_URL}/${controller.resourceRoute}/`, controller.getAllResources);
 
+    router.put(`/${SUB_URL}/${controller.resourceRoute}/`, controller.putResource);
+
     router.get(`^/${SUB_URL}/${controller.resourceRoute}/:uuid([0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12})`, controller.getResourcesByUUID);
 
     router.get(`^/${SUB_URL}/${controller.resourceRoute}/:uuid([0-9A]{36})`, controller.getResourcesByUUID);
