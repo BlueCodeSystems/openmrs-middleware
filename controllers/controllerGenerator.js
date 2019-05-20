@@ -1,6 +1,10 @@
 import moment from "moment";
 import axios from "axios";
+import Kafka from "kafkajs";
 import config from "./config";
+
+
+const kafka = new Kafka({clientId:'cool-client',brokers:['172.30.2.93:9092']})
 
 let datetimeFormatter = datetime => moment(datetime).format('YYYY-MM-DD HH:mm:ss')
 
@@ -15,10 +19,16 @@ let getResourcesByDatetimeNewerThan = datetimeFormatter => dao => async (req, re
 
 let putResource = destConfig => route => async(req, res) => {
 
-    const url = destConfig.url+route;
-    const payload = req.body;
-    let response = await axios.put(url,payload);
-    res.sendStatus(response.status);
+    const topic = route.split("/").join("_");
+    const payloads = {topic, messages:[req.body]};
+
+    const producer = kafka.producer()
+
+    await producer.connect();
+
+    await producer.send(payloads);
+
+    await producer.disconnect();  
 }
 
 let getResourcesByUUID = dao => async (req, res) => res.json((await dao.getDataByUUID(req.params['uuid']))[0]);
