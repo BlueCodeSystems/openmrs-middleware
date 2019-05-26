@@ -1,10 +1,11 @@
 import moment from "moment";
 import axios from "axios";
-import Kafka from "kafkajs";
+import {Kafka} from "kafkajs";
 import config from "./config";
 
 
-const kafka = new Kafka({clientId:'cool-client',brokers:['172.30.2.93:9092']})
+const kafka = new Kafka({clientId:'cool-client',brokers:[config.kafkaBroker]})
+const producer = kafka.producer();
 
 let datetimeFormatter = datetime => moment(datetime).format('YYYY-MM-DD HH:mm:ss')
 
@@ -17,7 +18,17 @@ let getResourcesByDatetimeNewerThan = datetimeFormatter => dao => async (req, re
     return res.json((await dao.getDataByDatetimeNewerThan(datetime))[0]);
 } 
 
-let putResource = destConfig => route => async(req, res) => {
+let putResource = producer => route => async(req, res) => {
+
+    const topic = route.split("/").join("-");
+
+    let messages = [];
+    
+    req.body.map(message => messages.push({value:JSON.stringify(message)}));
+
+    await producer.connect();
+
+    let response = await producer.send({topic, messages});
 
     const topic = route.split("/").join("_");
     const payloads = {topic, messages:[req.body]};
@@ -29,6 +40,9 @@ let putResource = destConfig => route => async(req, res) => {
     await producer.send(payloads);
 
     await producer.disconnect();  
+
+ 
+    res.send(response);
 }
 
 let getResourcesByUUID = dao => async (req, res) => res.json((await dao.getDataByUUID(req.params['uuid']))[0]);
@@ -48,4 +62,4 @@ let controllerGenerator = callbacks => resourceRoute => dao => (
     }
 )
 
-export default controllerGenerator([getAllResoures, getResourcesByUUID, getResourcesByDatetimeNewerThan, datetimeFormatter,putResource(config)]);
+export default controllerGenerator([getAllResoures, getResourcesByUUID, getResourcesByDatetimeNewerThan, datetimeFormatter,putResource(producer)]);
