@@ -24,24 +24,20 @@ let putResource = producer => route => async(req, res) => {
 
     let messages = [];
     
-    req.body.map(message => messages.push({value:JSON.stringify(message)}));
+    req.body.map(message => messages.push({
+        value:JSON.stringify({
+            entity:message,
+            locationUuid: req.params['locationUuid'],
+            timestamp: moment.now()
+        })
+    }));
 
     await producer.connect();
 
     let response = await producer.send({topic, messages});
 
-    const topic = route.split("/").join("_");
-    const payloads = {topic, messages:[req.body]};
-
-    const producer = kafka.producer()
-
-    await producer.connect();
-
-    await producer.send(payloads);
-
     await producer.disconnect();  
 
- 
     res.send(response);
 }
 
