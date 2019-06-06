@@ -23,15 +23,21 @@ let putResource = producer => route => async(req, res) => {
     const topic = route.split("/").join("-");
 
     let messages = [];
-    
-    req.body.map(message => messages.push({value:JSON.stringify(message)}));
+    let timestamp = moment.now(); 
+    req.body.map(message => messages.push({
+        value:JSON.stringify({
+            entity:message,
+            batchVersion:Number(req.params['batchVersion']),
+            timestamp
+        })
+    }));
 
     await producer.connect();
 
     let response = await producer.send({topic, messages});
 
-    await producer.disconnect();
- 
+    await producer.disconnect();  
+
     res.send(response);
 }
 
