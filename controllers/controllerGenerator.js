@@ -58,4 +58,19 @@ let controllerGenerator = callbacks => resourceRoute => dao => (
     }
 )
 
+let getId = async(req, res) => {
+
+   const batchSize = Number(req.params['batchSize'])
+   const source = Number(req.params['source'])
+   const CREDINTIALS = req.headers.authorization;
+
+   const response = await axios.get(`${config.openmrsUrl}/module/idgen/exportIdentifiers.form?source=${source}&numberToGenerate=${batchSize}`,
+        {
+            headers:{Authorization: CREDINTIALS}
+        }
+    );
+
+    res.json(response)
+}
+export {getId}
 export default controllerGenerator([getAllResoures, getResourcesByUUID, getResourcesByDatetimeNewerThan, datetimeFormatter,putResource(producer)]);
