@@ -3,7 +3,6 @@ import axios from "axios";
 import {Kafka} from "kafkajs";
 import config from "./config";
 
-
 const kafka = new Kafka({clientId:'cool-client',brokers:[config.kafkaBroker]})
 const producer = kafka.producer();
 
@@ -63,14 +62,10 @@ let getId = async(req, res) => {
    const batchSize = Number(req.params['batchSize'])
    const source = Number(req.params['source'])
    const CREDINTIALS = req.headers.authorization;
-
-   const response = await axios.get(`${config.openmrsUrl}/module/idgen/exportIdentifiers.form?source=${source}&numberToGenerate=${batchSize}`,
-        {
-            headers:{Authorization: CREDINTIALS}
-        }
-    );
-
-    res.json(response)
+  
+   const response = await axios.get(`${config.openmrsUrl}module/idgen/exportIdentifiers.form?source=${source}&numberToGenerate=${batchSize}&username=${config.openmrsAdminUsername}&password=${config.openmrsAdminPassword}`);
+  
+    res.json(response.data)
 }
-export {getId}
-export default controllerGenerator([getAllResoures, getResourcesByUUID, getResourcesByDatetimeNewerThan, datetimeFormatter,putResource(producer)]);
+let doaControllerGenerator = controllerGenerator([getAllResoures, getResourcesByUUID, getResourcesByDatetimeNewerThan, datetimeFormatter,putResource(producer)])
+export {doaControllerGenerator,getId};
