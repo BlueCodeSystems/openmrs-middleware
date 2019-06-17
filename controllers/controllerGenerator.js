@@ -1,7 +1,7 @@
 import moment from "moment";
 import axios from "axios";
 import {Kafka} from "kafkajs";
-import config from "./config";
+import config from "../config/config";
 
 const kafka = new Kafka({clientId:'cool-client',brokers:[config.kafkaBroker]})
 const producer = kafka.producer();
