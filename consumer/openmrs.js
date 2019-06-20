@@ -4,10 +4,14 @@ import axios from "axios";
 import base64 from "base-64";
 
 
+const restApiRoute = `${config.openmrsUrl}${config.openmrsRestApiRoute}` 
+const credentials = 'Basic '+base64.encode(`${config.openmrsAdminUsername}:${config.openmrsAdminPassword}`)
+
 function start(){
 
     registerConsumer(Kafka)("cool-client")("patient")(createOpenmrsPatient)
-    
+    registerConsumer(Kafka)("cooler-client")("visit")(createOpenmrsVisit)
+  
 }
 
 const registerConsumer= kafka => groupId => topic => async(callback) => {
@@ -27,8 +31,6 @@ const registerConsumer= kafka => groupId => topic => async(callback) => {
 
 let createOpenmrsPatient = async (data) => {
     
-    const restApiRoute = `${config.openmrsUrl}${config.openmrsRestApiRoute}` 
-    const credentials = 'Basic '+base64.encode(`${config.openmrsAdminUsername}:${config.openmrsAdminPassword}`)
     const patientData = JSON.parse(data.toString('utf8'))
     let {address1,attributes,birthdate,cityVillage,familyName,gender,givenName,identifiers,stateProvince} = patientData.entity
 
@@ -47,6 +49,26 @@ let createOpenmrsPatient = async (data) => {
     let person = createPersonResponse.data.uuid
     await axios.post(restApiRoute+"/patient/",{person,identifiers},{headers: {'Authorization':credentials}})
     await axios.post(`${restApiRoute}/person/${person}/address/`,{address1, cityVillage,stateProvince},{headers: {'Authorization':credentials}})    
+}
+
+let createOpenmrsVisit = async (data) => {
+
+    const visitData = JSON.parse(data.toString('utf8'))
+    let {patient,startDatetime,stopDatetime,visitType,location,encounters} = visitData.entity
+    let createVisitResponse = await axios.post(restApiRoute+"/visit/",{patient,startDatetime,stopDatetime,visitType,location},{headers: {'Authorization':credentials}})
+    let visit = createVisitResponse.data.uuid
+
+    let submitEncounter = async (encounter) =>{
+    
+      if(encounter != null){ 	
+      	let {encounterDatetime,encounterType,location,obs} = encounter
+        console.log("Obs",obs)
+      	let createVisitResponse = await axios.post(restApiRoute+"/encounter/",{encounterDatetime,patient,encounterType,location,visit,obs},{headers: {'Authorization':credentials}})
+
+      }
+  }
+   
+    encounters.map(submitEncounter) 
 }
 
 export default {start}
