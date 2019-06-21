@@ -52,6 +52,8 @@ const CONTROLLERS = [
     doaControllerGenerator('field/type')(daoGenerator('field_type','uuid',['date_created','date_changed'],connection)),
     doaControllerGenerator('user')(daoGenerator('users','uuid',['date_created','date_changed'],connection)),
     doaControllerGenerator('provider')(daoGenerator('provider','uuid',['date_created','date_changed'],connection)),
+    doaControllerGenerator('provider/attribute')(daoGenerator('provider','uuid',['date_created','date_changed'],connection)),
+    doaControllerGenerator('provider/attribute/type')(daoGenerator('provider','uuid',['date_created','date_changed'],connection)),
     doaControllerGenerator('visit')(daoGenerator('visit','uuid',['date_created','date_changed'],connection)),
     doaControllerGenerator('visit/type')(daoGenerator('visit_type','uuid',['date_created','date_changed'],connection)),
     doaControllerGenerator('allergy')(daoGenerator('allergy','uuid',['date_created','date_changed'],connection)),
