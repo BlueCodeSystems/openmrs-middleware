@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import router from './routes/index';
+import openmrsConsumer from './consumer/openmrs';
 
 let app = express();
 
@@ -14,3 +15,5 @@ app.use('/', router);
 app.listen(PORT, function () {
     console.log(`openmrs-middleware listening on port ${PORT}`);
 });
+
+openmrsConsumer.start();
