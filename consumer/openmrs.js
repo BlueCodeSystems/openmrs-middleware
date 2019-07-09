@@ -22,7 +22,9 @@ const registerConsumer= kafka => groupId => topic => async(callback) => {
     await consumer.run(
         {
           eachMessage: async ({message}) => {
+              consumer.pause([{ topic }])
               callback(message.value)
+              consumer.resume([{ topic }])
           }
         }
     )
