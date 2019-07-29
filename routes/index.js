@@ -2,16 +2,16 @@ import express from 'express';
 let router = express.Router();
 
 import { CONTROLLERS } from "../controllers/controllers";
-import { getId } from "../controllers/controllerGenerator";
+import controller from "../controllers/controllerGenerator";
 import { openmrsAuthorization, requestSessionToken, verifySessionToken } from "../middleware/authentication";
 
 const SUB_URL = "middleware/rest";
 
-router.get(`/${SUB_URL}/session`,openmrsAuthorization, requestSessionToken);
+router.get(`/${SUB_URL}/session`,openmrsAuthorization, requestSessionToken, controller.getProviderData);
 
 router.use(verifySessionToken);
 
-router.get(`/${SUB_URL}/idgen/:source(\\d+)/:batchSize(\\d+)`,getId);
+router.get(`/${SUB_URL}/idgen/:source(\\d+)/:batchSize(\\d+)`,controller.getId);
 
 CONTROLLERS.forEach( controller => {
 

@@ -2,6 +2,11 @@ import moment from "moment";
 import axios from "axios";
 import {Kafka} from "kafkajs";
 import config from "../config/config";
+import dbConnection from '../resources/dbConnection';
+import dao from "../dao/daoGenerator"
+
+
+const connection = dbConnection.promise();
 
 const kafka = new Kafka({clientId:'cool-client',brokers:[config.kafkaBroker]})
 const producer = kafka.producer();
@@ -61,11 +66,29 @@ let getId = async(req, res) => {
 
    const batchSize = Number(req.params['batchSize'])
    const source = Number(req.params['source'])
-   const CREDINTIALS = req.headers.authorization;
   
    const response = await axios.get(`${config.openmrsUrl}module/idgen/exportIdentifiers.form?source=${source}&numberToGenerate=${batchSize}&username=${config.openmrsAdminUsername}&password=${config.openmrsAdminPassword}`);
   
     res.json(response.data)
 }
+
+ let getProviderData = connection => doa => async(req, res) => {
+
+    let user = req.data.user
+    let provider = (await doa.getProviderByUser(connection)(user.uuid))[0][0]
+    user.providerId = provider.provider_id
+    user.userId = provider.user_id
+    let attributes = ((await doa.getProviderAttributeByAttributeTypeUuid(connection)(user.providerId)('c34fac13-9c48-4f29-beb1-04c8d0a86754'))[0]).map(result => result.value)
+    user.location = (await doa.getLocationByUuid(connection)(attributes))[0]
+    res.json(req.data)
+ }
+
 let doaControllerGenerator = controllerGenerator([getAllResoures, getResourcesByUUID, getResourcesByDatetimeNewerThan, datetimeFormatter,putResource(producer)])
-export {doaControllerGenerator,getId};
+
+let controller = {
+	doaControllerGenerator,
+        getId,
+        getProviderData:getProviderData(connection)(dao)
+        
+}
+export default controller;

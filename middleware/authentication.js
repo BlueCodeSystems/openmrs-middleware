@@ -21,7 +21,7 @@ let openmrsAuthorization = async(req, res, next) => {
     next();
 }
 
-let requestSessionToken = async(req, res) => {
+let requestSessionToken = async(req, res, next) => {
 
     if(req.authorizationStatus == null)
         return res.sendStatus(401);
@@ -39,9 +39,9 @@ let requestSessionToken = async(req, res) => {
 		    systemId: userdetails.systemId
         }
 
-        const TOKEN = jwt.sign({user}, `${process.env.SECRET_KEY}`, { expiresIn: Number(process.env.SESSION_EXPIRATION) });
-
-        return res.json({user,token: TOKEN})
+        const token = jwt.sign({user}, `${process.env.SECRET_KEY}`, { expiresIn: Number(process.env.SESSION_EXPIRATION) });
+        req.data = {user,token}
+        next()
     }
     else
          return res.sendStatus(401);
