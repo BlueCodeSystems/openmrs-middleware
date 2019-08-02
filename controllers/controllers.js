@@ -1,8 +1,10 @@
-import {doaControllerGenerator} from './controllerGenerator';
-import daoGenerator from "../dao/daoGenerator";
+import controller from './controllerGenerator';
+import dao from "../dao/daoGenerator";
 import dbConnection from '../resources/dbConnection';
 
-let connection = dbConnection.promise();
+const connection = dbConnection.promise();
+const daoGenerator = dao.daoGenerator
+const doaControllerGenerator = controller.doaControllerGenerator
 
 const CONTROLLERS = [
 
