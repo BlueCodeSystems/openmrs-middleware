@@ -66,7 +66,6 @@ let getId = async(req, res) => {
 
    const batchSize = Number(req.params['batchSize'])
    const source = Number(req.params['source'])
-  
    const response = await axios.get(`${config.openmrsUrl}module/idgen/exportIdentifiers.form?source=${source}&numberToGenerate=${batchSize}&username=${config.openmrsAdminUsername}&password=${config.openmrsAdminPassword}`);
   
     res.json(response.data)
@@ -83,12 +82,49 @@ let getId = async(req, res) => {
     res.json(req.data)
  }
 
+ let genericController = connection => dao => (tableName, patientIdAttribute='patient_id')  => async(req, res) => {
+     
+    const locationId = Number(req.params['locationId'])
+    const limit = Number(req.params['limit'])
+    const datetime = req.params['datetime']
+    const result = (await dao.getData(connection)(tableName, patientIdAttribute)(locationId)(limit)(datetime))[0]
+
+    res.json(result)
+ }
+
+ let getPatient = connection => dao => async(req, res) => {
+     
+    const locationId = Number(req.params['locationId'])
+    const limit = Number(req.params['limit'])
+    const datetime = req.params['datetime']
+    const result = (await dao.getPatient(connection)(locationId)(limit)(datetime))[0]
+
+    res.json(result)
+ }
+
 let doaControllerGenerator = controllerGenerator([getAllResoures, getResourcesByUUID, getResourcesByDatetimeNewerThan, datetimeFormatter,putResource(producer)])
+
+
 
 let controller = {
 	doaControllerGenerator,
         getId,
-        getProviderData:getProviderData(connection)(dao)
+        getProviderData:getProviderData(connection)(dao),
+        getPatientIdentifier:genericController(connection)(dao)('patient_identifier'),
+        getVisit:genericController(connection)(dao)('visit'),
+        getEncounter:genericController(connection)(dao)('encounter'),
+        getPatient:genericController(connection)(dao)('patient'),
+        getObs:genericController(connection)(dao)('obs'),
+        getPerson:genericController(connection)(dao)('person','person_id'),
+        getPersonName:genericController(connection)(dao)('person_name','person_id'),
+        getPersonAddress:genericController(connection)(dao)('person_address','person_id'),
+        getLocation:genericController(connection)(dao)('location'),
+        getConcept:genericController(connection)(dao)('concept'),
+        getConceptAnswer:genericController(connection)(dao)('concept_answer'),
+        getConceptName:genericController(connection)(dao)('concept_name'),
+        getLocationTag:genericController(connection)(dao)('location_tag'),
+        getLocationAttribute:genericController(connection)(dao)('location_attribute'),
+        getLocationAttributeType:genericController(connection)(dao)('location_attribute_type')
         
 }
 export default controller;
