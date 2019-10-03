@@ -36,6 +36,8 @@ let putResource = producer => route => async(req, res) => {
         })
     }));
 
+    console.log("messages", messages);
+
     await producer.connect();
 
     let response = await producer.send({topic, messages});
@@ -74,11 +76,13 @@ let getId = async(req, res) => {
  let getProviderData = connection => doa => async(req, res) => {
 
     let user = req.data.user
-    let provider = (await doa.getProviderByUser(connection)(user.uuid))[0][0]
-    user.providerId = provider.provider_id
-    user.userId = provider.user_id
+    user.provider = (await doa.getProviderByUser(connection)(user.uuid))[0][0]
+    user.providerId = user.provider.provider_id
+    user.userId = user.provider.user_id
     let attributes = ((await doa.getProviderAttributeByAttributeTypeUuid(connection)(user.providerId)('c34fac13-9c48-4f29-beb1-04c8d0a86754'))[0]).map(result => result.value)
     user.location = (await doa.getLocationByUuid(connection)(attributes))[0]
+    user.personName = (await doa.getPersonNameByProviderId(connection)(user.providerId))[0][0]
+    req.data.timeZone = process.env.TZ
     res.json(req.data)
  }
 
@@ -86,18 +90,10 @@ let getId = async(req, res) => {
      
     const locationId = Number(req.params['locationId'])
     const limit = Number(req.params['limit'])
+    const offset = Number(req.params['offset'])
     const datetime = req.params['datetime']
-    const result = (await dao.getData(connection)(tableName, patientIdAttribute)(locationId)(limit)(datetime))[0]
 
-    res.json(result)
- }
-
- let getPatient = connection => dao => async(req, res) => {
-     
-    const locationId = Number(req.params['locationId'])
-    const limit = Number(req.params['limit'])
-    const datetime = req.params['datetime']
-    const result = (await dao.getPatient(connection)(locationId)(limit)(datetime))[0]
+    const result = (await dao.getData(connection)(tableName, patientIdAttribute)(locationId)(limit)(datetime, offset))[0]
 
     res.json(result)
  }
@@ -113,7 +109,7 @@ let controller = {
         getPatientIdentifier:genericController(connection)(dao)('patient_identifier'),
         getVisit:genericController(connection)(dao)('visit'),
         getEncounter:genericController(connection)(dao)('encounter'),
-        getPatient:genericController(connection)(dao)('patient'),
+        getPatient:genericController(connection)(dao)('patient','patient_id'),
         getObs:genericController(connection)(dao)('obs'),
         getPerson:genericController(connection)(dao)('person','person_id'),
         getPersonName:genericController(connection)(dao)('person_name','person_id'),

@@ -9,9 +9,9 @@ const SUB_URL = "middleware/rest";
 
 const SUB_URL_V1 = "middleware/rest/v1";
 
-const routeParams = `location/:locationId/limit/:datetime/:limit`
+const routeParams = `location/:locationId/limit/:datetime/:offset/:limit`
 
-const routeParamsNoLocation = `limit/:datetime/:limit`
+const routeParamsNoLocation = `limit/:datetime/:offset/:limit`
 
 router.get(`/${SUB_URL}/session`,openmrsAuthorization, requestSessionToken, controller.getProviderData);
 
