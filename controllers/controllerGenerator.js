@@ -4,7 +4,8 @@ import {Kafka} from "kafkajs";
 import config from "../config/config";
 import dbConnection from '../resources/dbConnection';
 import dao from "../dao/daoGenerator"
-
+let fs=require('fs');
+let path=require('path');
 
 const connection = dbConnection.promise();
 
@@ -72,6 +73,34 @@ let getId = async(req, res) => {
     res.json(response.data)
 }
 
+//get image from gallery
+let getImageById=(request,response)=>
+{
+    //image gallery directory
+    //insert directory to images here
+   let imgDirectory = process.env.IMAGE_DIRECTORY;
+  
+    //get the image id from the url
+    let img=request.params.id;
+
+       fs.readFile(imgDirectory+"/"+img+".png",(err,data)=>
+      
+       {
+           if(err)
+           {
+               response.send("no such image");
+              
+               console.log(err);
+           }
+           else{
+            response.writeHead(200,{'Content-type':'image/png'});
+            response.end(data);
+            console.log("success");
+
+           }
+        });
+    }
+
  let getProviderData = connection => doa => async(req, res) => {
 
     let user = req.data.user
@@ -88,7 +117,8 @@ let doaControllerGenerator = controllerGenerator([getAllResoures, getResourcesBy
 let controller = {
 	doaControllerGenerator,
         getId,
-        getProviderData:getProviderData(connection)(dao)
+        getProviderData:getProviderData(connection)(dao),
+        getImageById
         
 }
 export default controller;
