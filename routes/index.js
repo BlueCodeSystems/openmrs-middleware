@@ -10,8 +10,11 @@ const SUB_URL = "middleware/rest";
 router.get(`/${SUB_URL}/session`,openmrsAuthorization, requestSessionToken, controller.getProviderData);
 
 router.use(verifySessionToken);
-
 router.get(`/${SUB_URL}/idgen/:source(\\d+)/:batchSize(\\d+)`,controller.getId);
+
+//return image from image gallery
+router.get(`/${SUB_URL}/image/:id/`,controller.getImageById);
+
 
 CONTROLLERS.forEach( controller => {
 
