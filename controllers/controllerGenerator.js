@@ -82,6 +82,7 @@ let getId = async(req, res) => {
     let attributes = ((await doa.getProviderAttributeByAttributeTypeUuid(connection)(user.providerId)('c34fac13-9c48-4f29-beb1-04c8d0a86754'))[0]).map(result => result.value)
     user.location = (await doa.getLocationByUuid(connection)(attributes))[0]
     user.personName = (await doa.getPersonNameByProviderId(connection)(user.providerId))[0][0]
+    user.personId = user.personName.person_id;
     req.data.timeZone = process.env.TZ
     res.json(req.data)
  }
