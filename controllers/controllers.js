@@ -88,4 +88,5 @@ const CONTROLLERS = [
     doaControllerGenerator('user/property')(daoGenerator('user_property',null,null,connection))
 ];
 
+
 export {CONTROLLERS}

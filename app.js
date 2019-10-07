@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import router from './routes/index';
 import openmrsConsumer from './consumer/openmrs';
 
+
 let app = express();
 
 const PORT = process.env.PORT || 8086;

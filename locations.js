@@ -60,10 +60,9 @@ let getLocation = async() => {
                         console.log("Location created")
                         displayNames.add(location.displayName)
                     } catch (error) {
-                        console.error("Err")
+                        console.error("Err", error)
                         continue
-                    }
-                    
+                    }  
                 }
             }
             else{
