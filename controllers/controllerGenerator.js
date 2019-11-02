@@ -4,6 +4,7 @@ import {Kafka} from "kafkajs";
 import config from "../config/config";
 import dbConnection from '../resources/dbConnection';
 import dao from "../dao/daoGenerator"
+import path from "path";
 
 
 const connection = dbConnection.promise();
@@ -86,6 +87,11 @@ let getId = async(req, res) => {
     req.data.timeZone = process.env.TZ
     res.json(req.data)
  }
+ 
+ function upload(req, res) {
+        
+    res.sendFile(path.join(__dirname + '/../dist/index.html'));
+ }
 
  let genericController = connection => dao => (tableName, patientIdAttribute='patient_id')  => async(req, res) => {
      
@@ -104,6 +110,7 @@ let doaControllerGenerator = controllerGenerator([getAllResoures, getResourcesBy
 
 
 let controller = {
+    upload,
 	doaControllerGenerator,
         getId,
         getProviderData:getProviderData(connection)(dao),

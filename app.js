@@ -11,6 +11,8 @@ const PORT = process.env.PORT || 8086;
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json({limit: '50mb', extended: true}));
 
+app.use('/smartcerv',express.static('dist'))
+
 app.use('/', router);
 
 app.listen(PORT, function () {
