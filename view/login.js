@@ -5,34 +5,51 @@ import {Button} from 'primereact/button';
 import {Card} from 'primereact/card';
 import './login.css';
 import axios from "axios";
+import Upload from "./upload";
 
 
 
  function Login(){
    
-  const [state, setState] = useState({username:"", password:""});
+  const [state, setState] = useState({username:"", password:"", authorzed: false, name:""});
 
   const emitUsername = username => {
 
     const password = state.password;
-    setState({ username, password });
+    const authorzed = state.authorzed;
+    setState({ username, password,authorzed });
   }
 
   const emitPassword = password => {
 
     const username = state.username;
-    setState({ username, password });
+    const authorzed = state.authorzed;
+    setState({ username, password,authorzed });
   }
 
     const submit = async() => {
       console.log("submitted",state);
-      let result = await axios.get("https://openmrs.bluecodeltd.com/middleware/rest/session", {auth:{ username:state.username, password:state.password}});
 
-      console.log('result', result);
+      const username = state.username;
+      const password = state.password;
+      const name = state.name;
+      
+      let token;
+      try{
+         let result = await axios.get("http://34.240.241.171:8087/middleware/rest/session", {auth:{ username:state.username, password:state.password}});
+         token = result.data.token;
+         let facilityId = result.data.user.location[0]["location_id"];
+
+         if(token != undefined && facilityId != undefined)
+            setState({username, password, authorzed:true, name:facilityId.toString()})
+      }catch(e){
+         console.log('error');
+         setState({username, password, authorzed:false, name})
+      }
 
     }
 
-    return(
+    return (!state.authorzed)?(
 
     <Card className="card">
           <h3>Enter your credentials</h3>
@@ -42,5 +59,7 @@ import axios from "axios";
     
     </Card>
   )
+  :
+  (<Upload name={state.name} />)
 }
 export default Login;

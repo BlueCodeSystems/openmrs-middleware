@@ -5,6 +5,7 @@ import config from "../config/config";
 import dbConnection from '../resources/dbConnection';
 import dao from "../dao/daoGenerator"
 import path from "path";
+import mkdirp from "mkdirp";
 
 
 const connection = dbConnection.promise();
@@ -93,6 +94,33 @@ let getId = async(req, res) => {
     res.sendFile(path.join(__dirname + '/../dist/index.html'));
  }
 
+ function uploadFiles(req, res) {
+        
+    const EDI_DIR = "/home/ubuntu/edi";
+    if (!req.files || Object.keys(req.files).length === 0) {
+        return res.status(400).send('No files were uploaded.');
+    }
+
+    console.log(req.files);
+    let name = Object.keys(req.files)[0]
+
+    const dir = `${EDI_DIR}/${name}/${moment.now().toString()}`
+
+    mkdirp(dir, err => console.error(err));
+
+    console.log('name',name)
+    req.files[name].map(file => {
+
+        file.mv(`${dir}/${file.name}`, function(err) {
+            if (err)
+              return res.status(500).send(err);
+          } )
+    });
+
+    res.send('File uploaded!');
+ }
+
+
  let genericController = connection => dao => (tableName, patientIdAttribute='patient_id')  => async(req, res) => {
      
     const locationId = Number(req.params['locationId'])
@@ -111,6 +139,7 @@ let doaControllerGenerator = controllerGenerator([getAllResoures, getResourcesBy
 
 let controller = {
     upload,
+    uploadFiles,
 	doaControllerGenerator,
         getId,
         getProviderData:getProviderData(connection)(dao),
