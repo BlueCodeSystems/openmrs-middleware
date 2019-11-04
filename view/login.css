@@ -1,0 +1,14 @@
+.card{
+    width: 30%;
+    height: 300px;
+  display: flex;
+  flex-wrap: wrap;  
+  justify-content: center;
+  align-items: center;
+}
+
+.inputs{
+    width: 90%;
+    margin-bottom: 20px;
+    align-self: center;
+}

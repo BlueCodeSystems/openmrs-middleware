@@ -19,4 +19,4 @@ app.listen(PORT, function () {
     console.log(`openmrs-middleware listening on port ${PORT}`);
 });
 
-openmrsConsumer.start();
+//openmrsConsumer.start();
