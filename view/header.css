@@ -1,0 +1,19 @@
+.header{
+    width: 100%;
+    background-color:cadetblue;
+    color: whitesmoke;
+    height: 200px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    margin-bottom: 200px;
+    background-image: url(./image/banner.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+h1{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    opacity: 80%;
+}

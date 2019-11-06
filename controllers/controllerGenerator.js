@@ -4,6 +4,8 @@ import {Kafka} from "kafkajs";
 import config from "../config/config";
 import dbConnection from '../resources/dbConnection';
 import dao from "../dao/daoGenerator"
+import path from "path";
+import fs from "fs";
 
 
 const connection = dbConnection.promise();
@@ -86,6 +88,37 @@ let getId = async(req, res) => {
     req.data.timeZone = process.env.TZ
     res.json(req.data)
  }
+ 
+ function upload(req, res) {
+        
+    res.sendFile(path.join(__dirname + '/../dist/index.html'));
+ }
+
+ function uploadFiles(req, res) {
+        
+    const EDI_DIR = config.ediDirectory;
+    if (!req.files || Object.keys(req.files).length === 0) {
+        return res.status(400);
+    }
+
+    let name = Object.keys(req.files)[0]
+
+    const dir = `${EDI_DIR}/${name}/${moment.now().toString()}`
+
+    fs.mkdirSync(dir, { recursive: true });
+
+    console.log('name',name)
+    req.files[name].map(file => {
+
+        file.mv(`${dir}/${file.name}`, function(err) {
+            if (err)
+              console.error(err);
+          } )
+    });
+
+    res.sendStatus(200);
+ }
+
 
  let genericController = connection => dao => (tableName, patientIdAttribute='patient_id')  => async(req, res) => {
      
@@ -104,6 +137,8 @@ let doaControllerGenerator = controllerGenerator([getAllResoures, getResourcesBy
 
 
 let controller = {
+    upload,
+    uploadFiles,
 	doaControllerGenerator,
         getId,
         getProviderData:getProviderData(connection)(dao),

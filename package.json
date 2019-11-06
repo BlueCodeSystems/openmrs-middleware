@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon ./app.js --exec babel-node"
+    "start": "nodemon ./app.js --exec babel-node",
+    "build": "webpack --mode production",
+    "view": "webpack-dev-server --mode development --open --hot --host 0.0.0.0"
   },
   "keywords": [
     "middleware"
@@ -19,6 +21,9 @@
     "base-64": "^0.1.0",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
+    "express-favicon": "^2.0.1",
+    "express-fileupload": "^1.1.6-alpha.6",
+    "html-webpack-plugin": "^3.2.0",
     "jsonwebtoken": "^8.5.1",
     "kafka-node": "^4.1.3",
     "kafkajs": "^1.10.0",
@@ -26,12 +31,31 @@
     "moment-timezone": "^0.5.26",
     "mysql": "^2.17.1",
     "mysql2": "^1.6.5",
-    "ramda": "^0.26.1"
+    "primeflex": "^1.0.0",
+    "primeicons": "^2.0.0",
+    "primereact": "^3.3.2",
+    "ramda": "^0.26.1",
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0",
+    "serve-favicon": "^2.5.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
-    "@babel/core": "^7.5.5",
+    "@babel/core": "^7.6.4",
     "@babel/node": "^7.5.5",
-    "@babel/preset-env": "^7.5.5"
+    "@babel/preset-env": "^7.6.3",
+    "@babel/preset-react": "^7.6.3",
+    "babel-loader": "^8.0.6",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-latest": "^6.24.1",
+    "classnames": "^2.2.6",
+    "css-loader": "^3.2.0",
+    "file-loader": "^4.2.0",
+    "primeicons": "^1.0.0",
+    "react-transition-group": "^2.5.1",
+    "style-loader": "^1.0.0",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.9.0"
   }
 }

@@ -1,0 +1,18 @@
+.card{
+    width: 30%;
+    height: 300px;
+  display: flex;
+  flex-wrap: wrap;  
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0px 0px 5px grey;
+  background-color: white;
+}
+
+.inputs{
+    width: 90%;
+}
+
+.login-error-messege{
+  color: red;
+}
