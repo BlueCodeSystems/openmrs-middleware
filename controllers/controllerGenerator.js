@@ -5,7 +5,7 @@ import config from "../config/config";
 import dbConnection from '../resources/dbConnection';
 import dao from "../dao/daoGenerator"
 import path from "path";
-import mkdirp from "mkdirp";
+import fs from "fs";
 
 
 const connection = dbConnection.promise();
@@ -96,28 +96,27 @@ let getId = async(req, res) => {
 
  function uploadFiles(req, res) {
         
-    const EDI_DIR = "/home/ubuntu/edi";
+    const EDI_DIR = config.ediDirectory;
     if (!req.files || Object.keys(req.files).length === 0) {
-        return res.status(400).send('No files were uploaded.');
+        return res.status(400);
     }
 
-    console.log(req.files);
     let name = Object.keys(req.files)[0]
 
     const dir = `${EDI_DIR}/${name}/${moment.now().toString()}`
 
-    mkdirp(dir, err => console.error(err));
+    fs.mkdirSync(dir, { recursive: true });
 
     console.log('name',name)
     req.files[name].map(file => {
 
         file.mv(`${dir}/${file.name}`, function(err) {
             if (err)
-              return res.status(500).send(err);
+              console.error(err);
           } )
     });
 
-    res.send('File uploaded!');
+    res.sendStatus(200);
  }
 
 

@@ -7,7 +7,7 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    margin-bottom: 100px;
+    margin-bottom: 200px;
     background-image: url(./image/banner.jpg);
     background-repeat: no-repeat;
     background-size: cover;

@@ -15,11 +15,11 @@ const routeParamsNoLocation = `limit/:datetime/:offset/:limit`
 
 router.get(`/smartcerv/upload/`,controller.upload);
 
-router.post(`/smartcerv/upload/`,controller.uploadFiles);
-
 router.get(`/${SUB_URL}/session`,openmrsAuthorization, requestSessionToken, controller.getProviderData);
 
-//router.use(verifySessionToken);
+router.use(verifySessionToken);
+
+router.post(`/smartcerv/upload/`,controller.uploadFiles);
 
 router.get(`/${SUB_URL}/idgen/:source(\\d+)/:batchSize(\\d+)`,controller.getId);
 
