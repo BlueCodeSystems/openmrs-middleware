@@ -4,7 +4,7 @@ const path = require('path');
    entry: path.join(__dirname, './view/index.js'),
     output: {
        filename: 'build.js',
-       path: path.join(__dirname, './dist')},
+       path: path.join(__dirname, './dist/smartcerv/edi')},
    module:{
        rules:[{
          test: /\.js$/,

@@ -88,11 +88,6 @@ let getId = async(req, res) => {
     req.data.timeZone = process.env.TZ
     res.json(req.data)
  }
- 
- function upload(req, res) {
-        
-    res.sendFile(path.join(__dirname + '/../dist/index.html'));
- }
 
  function uploadFiles(req, res) {
         
@@ -137,7 +132,6 @@ let doaControllerGenerator = controllerGenerator([getAllResoures, getResourcesBy
 
 
 let controller = {
-    upload,
     uploadFiles,
 	doaControllerGenerator,
         getId,
