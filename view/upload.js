@@ -26,7 +26,7 @@ function Upload(props){
                 <div>
                     <h3>Select or drag and drop images</h3>
                 </div>
-                <FileUpload name={props.name} url="/smartcerv/upload" multiple={true} accept="image/*" onBeforeSend={addToken} onUpload={onSuccess} onError={onFailure}  />
+                <FileUpload name={props.name} url="/smartcerv/edi/upload" multiple={true} accept="image/*" onBeforeSend={addToken} onUpload={onSuccess} onError={onFailure}  />
             </div>)
             break;
     
