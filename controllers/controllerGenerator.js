@@ -97,19 +97,16 @@ let getId = async(req, res) => {
     }
 
     let name = Object.keys(req.files)[0]
+    let files = req.files[name];
 
     const dir = `${EDI_DIR}/${name}/${moment.now().toString()}`
 
     fs.mkdirSync(dir, { recursive: true });
 
-    console.log('name',name)
-    req.files[name].map(file => {
-
-        file.mv(`${dir}/${file.name}`, function(err) {
-            if (err)
-              console.error(err);
-          } )
-    });
+    if(Array.isArray(files))
+        files.map(file => file.mv(`${dir}/${file.name}`, err => console.error(err)));
+    else
+        files.mv(`${dir}/${files.name}`, err => console.error(err));
 
     res.sendStatus(200);
  }
