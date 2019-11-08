@@ -36,7 +36,7 @@ import Upload from "./upload";
     return (!state.authorzed)?(
 
     <div className="card">
-          <h3>Enter your credentials</h3>
+          <h3>Enter your Smartcerv credentials</h3>
           <InputText placeholder="Username" className="inputs"  onChange={(e) => emitUsername(e.target.value)}/>
           <Password  className="inputs"  onChange={(e) => emitPassword(e.target.value)} />      
           <Button  className="inputs" label="Login" onClick={submit}/>
