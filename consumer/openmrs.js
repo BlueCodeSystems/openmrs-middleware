@@ -91,7 +91,7 @@ let createOpenmrsVisit = async (data) => {
     console.log("visit creating error", e)
   }
 }
-async function updatePatient({address1,attributes,birthdate,cityVillage,familyName,gender,givenName,identifiers,stateProvince,uuid}){
+async function updatePatient({address1,attributes,birthdate,cityVillage,familyName,gender,givenName,identifiers,stateProvince,uuid,voided}){
   try{
 
       let personUuid = uuid;
@@ -185,6 +185,11 @@ async function updatePatient({address1,attributes,birthdate,cityVillage,familyNa
 
       birthdate = moment(birthdate).format("YYYY-MM-DD")
       await axios.post(`${restApiRoute}/person/${personUuid}/`,{birthdate,gender},{headers: {'Authorization':credentials}}) 
+    }
+
+    //Delete a patient
+    if(voided !== undefined && voided == 1){
+      await axios.delete(`${restApiRoute}/person/${personUuid}?!purge`,{headers: {'Authorization':credentials}})
     }
 
   }catch(e){
