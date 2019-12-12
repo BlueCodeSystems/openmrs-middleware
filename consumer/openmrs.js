@@ -124,7 +124,10 @@ async function updatePatient({address1,attributes,birthdate,cityVillage,familyNa
           for await(let {identifier, identifierType,uuid} of identifiers){
             
             if(uuid !== undefined)
-              await axios.post(`${restApiRoute}patient/${personUuid}/identifier/${uuid}/`,{identifier,identifierType},{headers: {'Authorization':credentials}})
+              if(voided != undefined && voided == 1)//delete
+                await axios.delete(`${restApiRoute}patient/${personUuid}/identifier/${uuid}?!purge`,{headers: {'Authorization':credentials}})
+              else //update
+                await axios.post(`${restApiRoute}patient/${personUuid}/identifier/${uuid}/`,{identifier,identifierType},{headers: {'Authorization':credentials}})
             else
               await axios.post(`${restApiRoute}patient/${personUuid}/identifier/`,{identifier,identifierType},{headers: {'Authorization':credentials}})
           }
@@ -188,8 +191,8 @@ async function updatePatient({address1,attributes,birthdate,cityVillage,familyNa
     }
 
     //Delete a patient
-    if(voided !== undefined && voided == 1){
-      await axios.delete(`${restApiRoute}/person/${personUuid}?!purge`,{headers: {'Authorization':credentials}})
+    if(identifiers == undefined && voided !== undefined && voided == 1){
+        await axios.delete(`${restApiRoute}/person/${personUuid}?!purge`,{headers: {'Authorization':credentials}})
     }
 
   }catch(e){
