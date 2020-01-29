@@ -44,7 +44,7 @@ let createOpenmrsPatient = async (data) => {
 
         const patientData = JSON.parse(data.toString('utf8'))
         console.log("patient consumer", patientData)
-        let {birthdate,familyName,gender,givenName,identifiers,uuid,address1,cityVillage,stateProvince} = patientData.entity
+        let {birthdate,familyName,gender,givenName,middleName,identifiers,uuid,address1,cityVillage,stateProvince} = patientData.entity
 
         if(uuid == undefined){
           
@@ -53,7 +53,7 @@ let createOpenmrsPatient = async (data) => {
           identifiers = identifiers.map(normalizeIdentifiers)
 
           //Create patient in Openmrs
-          let createPersonResponse = await axios.post(restApiRoute+"person/",{gender,birthdate, names:[{givenName,familyName}]},{headers: {'Authorization':credentials}})
+          let createPersonResponse = await axios.post(restApiRoute+"person/",{gender,birthdate, names:[{givenName,middleName,familyName}]},{headers: {'Authorization':credentials}})
           let person = createPersonResponse.data.uuid
           await axios.post(restApiRoute+"patient/",{person,identifiers},{headers: {'Authorization':credentials}})
 
@@ -91,7 +91,7 @@ let createOpenmrsVisit = async (data) => {
     console.log("visit creating error", e)
   }
 }
-async function updatePatient({address1,attributes,birthdate,cityVillage,familyName,gender,givenName,identifiers,stateProvince,uuid,voided}){
+async function updatePatient({address1,attributes,birthdate,cityVillage,familyName,gender,givenName,middleName,identifiers,stateProvince,uuid,voided}){
   try{
 
       let personUuid = uuid;
@@ -105,6 +105,9 @@ async function updatePatient({address1,attributes,birthdate,cityVillage,familyNa
 
           if(givenName != undefined)
             name = {...name, givenName}
+
+          if(middleName != undefined)
+            name = {...name, middleName}  
 
           let response = await axios.post(`${restApiRoute}person/${personUuid}/name/`,name,{headers: {'Authorization':credentials}})
           let preferredName = response.data.uuid
