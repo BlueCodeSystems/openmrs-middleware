@@ -124,7 +124,7 @@ async function updatePatient({address1,attributes,birthdate,cityVillage,familyNa
           let remoteIdMetadata = response.data.results.map(id => ({identifierType:id.identifierType.uuid, uuid:id.uuid}))
           identifiers =  identifiers.flatMap(getAttributeMetadata(remoteIdMetadata,'identifierType','identifier'))
 
-          for await(let {identifier, identifierType,uuid} of identifiers){
+          for await(let {identifier, identifierType,uuid,voided} of identifiers){
             
             if(uuid !== undefined)
               if(voided != undefined && voided == 1)//delete
