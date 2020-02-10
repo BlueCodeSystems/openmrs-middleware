@@ -38,6 +38,14 @@ let normalizeIdentifiers = id => {
   return id
 }
 
+let deleteAttribute = key => obj => {
+
+  if(key in obj)        
+    delete obj[key]
+
+  return obj
+}
+
 let createOpenmrsPatient = async (data) => {
    
     try{
@@ -50,7 +58,8 @@ let createOpenmrsPatient = async (data) => {
           
           //Normalize data
           birthdate = moment(birthdate).format("YYYY-MM-DD")
-          identifiers = identifiers.map(normalizeIdentifiers)
+          identifiers = identifiers.map(normalizeIdentifiers).map(deleteAttribute('voided'))
+          
 
           //Create patient in Openmrs
           let createPersonResponse = await axios.post(restApiRoute+"person/",{gender,birthdate, names:[{givenName,middleName,familyName}]},{headers: {'Authorization':credentials}})
@@ -122,7 +131,7 @@ async function updatePatient({address1,attributes,birthdate,cityVillage,familyNa
           let response = await axios.get(`${restApiRoute}patient/${personUuid}/identifier/`,{headers: {'Authorization':credentials}})
 
           let remoteIdMetadata = response.data.results.map(id => ({identifierType:id.identifierType.uuid, uuid:id.uuid}))
-          identifiers =  identifiers.flatMap(getAttributeMetadata(remoteIdMetadata,'identifierType','identifier'))
+          identifiers =  identifiers.flatMap(getAttributeMetadata(remoteIdMetadata,'identifierType'))
 
           for await(let {identifier, identifierType,uuid,voided} of identifiers){
             
@@ -142,7 +151,7 @@ async function updatePatient({address1,attributes,birthdate,cityVillage,familyNa
           let response = await axios.get(`${restApiRoute}person/${personUuid}/attribute/`,{headers: {'Authorization':credentials}})
 
           let attributeMetadata = response.data.results.map(attr => ({attributeType:attr.attributeType.uuid, uuid:attr.uuid}))
-          attributes = attributes.flatMap(getAttributeMetadata(attributeMetadata,'attributeType','value'))
+          attributes = attributes.flatMap(getAttributeMetadata(attributeMetadata,'attributeType'))
 
           console.log("Got to attrbutes", attributes)
         for await(let {attributeType, uuid, value} of attributes){
@@ -203,13 +212,12 @@ async function updatePatient({address1,attributes,birthdate,cityVillage,familyNa
   }
 }
 
-let getAttributeMetadata = (metadata,valueIndexType,valueIndexName) => attribute => {
+let getAttributeMetadata = (metadata,valueIndexType) => attribute => {
       
   let remoteAttributes = metadata
       .filter(mdata => mdata[valueIndexType] == attribute[valueIndexType])
       .map(mdata => { 
-         let remoteAttribute = {...mdata}
-         remoteAttribute[valueIndexName] = attribute[valueIndexName]
+         let remoteAttribute = {...attribute,...mdata}
          return remoteAttribute
         })
 
