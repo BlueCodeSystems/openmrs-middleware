@@ -1,11 +1,42 @@
 version: "3"
 services:
-  app:
-    # TODO add configs for the node.js app
+  openmrs-middleware:
+    image: makili/openmrs-middleware:1.0.0
+    container_name: openmrs-middleware
+    ports: 
+      - 8086:8086
+    environment:
+      PORT: 8086
+      MYSQL_PORT: 3306
+      MYSQL_HOST: 
+      MYSQL_USERNAME: smartcerv
+      MYSQL_USER_PASSWORD: smartcerv
+      KAFKA_BROKER: kafka:9092
+      KAFKA_PATIENT_TOPIC_CONSUMER_GROUP_ID: openmrs-patient
+      KAFKA_VISIT_TOPIC_CONSUMER_GROUP_ID: openmrs-visit
+      OPENMRS_MYSQL_DATABASE: openmrs
+      OPENMRS_SITE: http://openmrs:8080/openmrs/
+      OPENMRS_ADMIN_USERNAME: admin
+      OPENMRS_ADMIN_PASSWORD: Openmrs4Bluecode
+      OPENMRS_REST_API_ROUTE: ws/rest/v1/
+      SECRET_KEY: EyxPxKlBREO49w4KlW7Y05g4giF00IHujOaOYX
+      SESSION_EXPIRATION: 50000000
+      LOG_FILE: ./logs
+      TZ: 'Africa/Harare'
+      EDI_DIR: ./EDI
+    depends_on: 
+      - openmrs
+      - openmrs-mysql
+      - kafka
+    volumes: 
+      - ./:/src/openmrs-middleware
+
   openmrs-mysql:
     restart: "always"
     image: mysql:5.7
-    command: "mysqld --character-set-server=utf8 --collation-server=utf8_general_ci"
+    container_name: openmrs-mysql
+    ports: 
+      - 3306:3306
     environment:
       MYSQL_DATABASE: ${MYSQL_DB:-openmrs}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-Admin123}
@@ -19,10 +50,11 @@ services:
   openmrs:
     restart: "always"
     image: openmrs/openmrs-distro-platform:2.1.3
+    container_name: openmrs
     depends_on:
       - openmrs-mysql
     ports:
-      - "8080:8080"
+      - 8080:8080
     environment:
       DB_DATABASE: ${MYSQL_DB:-openmrs}
       DB_HOST: openmrs-mysql
@@ -36,18 +68,20 @@ services:
       timeout: 20s
     volumes:
       - openmrs-data:/usr/local/tomcat/.OpenMRS/
-      - /usr/local/tomcat/.OpenMRS/modules/ # do not store modules in data
-      - /usr/local/tomcat/.OpenMRS/owa/ # do not store owa in data
+      - /usr/local/tomcat/.OpenMRS/modules/
+      - /usr/local/tomcat/.OpenMRS/owa/
     #TODO add the UI modules
  
   zookeeper:
-    image: zookeeper:3.4.6
+    image: zookeeper:3.6.1
+    container_name: zookeeper
     hostname: zookeeper
     ports:
       - 2181:2181
 
   kafka:
     image: wurstmeister/kafka:2.11-2.0.1
+    container_name: kafka
     hostname: kafka
     depends_on:
       - zookeeper
