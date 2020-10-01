@@ -1,6 +1,7 @@
 version: "3"
 services:
   openmrs-middleware:
+    restart: always
     image: makili/openmrs-middleware:1.0.0
     container_name: openmrs-middleware
     ports: 
@@ -8,7 +9,7 @@ services:
     environment:
       PORT: 8086
       MYSQL_PORT: 3306
-      MYSQL_HOST: 
+      MYSQL_HOST: openmrs-mysql
       MYSQL_USERNAME: smartcerv
       MYSQL_USER_PASSWORD: smartcerv
       KAFKA_BROKER: kafka:9092
@@ -29,7 +30,7 @@ services:
       - openmrs-mysql
       - kafka
     volumes: 
-      - ./:/src/openmrs-middleware
+      - ./:/usr/src/openmrs-middleware
 
   openmrs-mysql:
     restart: "always"
@@ -73,6 +74,7 @@ services:
     #TODO add the UI modules
  
   zookeeper:
+    restart: "always"
     image: zookeeper:3.6.1
     container_name: zookeeper
     hostname: zookeeper
@@ -80,6 +82,7 @@ services:
       - 2181:2181
 
   kafka:
+    restart: "always"
     image: wurstmeister/kafka:2.11-2.0.1
     container_name: kafka
     hostname: kafka
